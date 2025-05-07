@@ -36,13 +36,18 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.FlowsGrid = new System.Windows.Forms.DataGridView();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.solutionPicker = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.toolStripMenu.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FlowsGrid)).BeginInit();
             this.groupBox3.SuspendLayout();
@@ -85,6 +90,10 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.checkBox7);
+            this.groupBox1.Controls.Add(this.checkBox6);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.solutionPicker);
             this.groupBox1.Location = new System.Drawing.Point(6, 52);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
@@ -142,6 +151,26 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Flow filters";
             // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(19, 83);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(94, 29);
+            this.checkBox2.TabIndex = 1;
+            this.checkBox2.Text = "Inctive";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(19, 48);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(92, 29);
+            this.checkBox1.TabIndex = 0;
+            this.checkBox1.Text = "Active";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // groupBox4
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -158,25 +187,15 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Auth type";
             // 
-            // checkBox1
+            // checkBox5
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(19, 48);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(92, 29);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Active";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(19, 83);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(94, 29);
-            this.checkBox2.TabIndex = 1;
-            this.checkBox2.Text = "Inctive";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.Location = new System.Drawing.Point(18, 118);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(160, 29);
+            this.checkBox5.TabIndex = 4;
+            this.checkBox5.Text = "Specific users";
+            this.checkBox5.UseVisualStyleBackColor = true;
             // 
             // checkBox3
             // 
@@ -198,15 +217,43 @@
             this.checkBox4.Text = "Anyone";
             this.checkBox4.UseVisualStyleBackColor = true;
             // 
-            // checkBox5
+            // solutionPicker
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(18, 118);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(160, 29);
-            this.checkBox5.TabIndex = 4;
-            this.checkBox5.Text = "Specific users";
-            this.checkBox5.UseVisualStyleBackColor = true;
+            this.solutionPicker.FormattingEnabled = true;
+            this.solutionPicker.Location = new System.Drawing.Point(26, 81);
+            this.solutionPicker.Name = "solutionPicker";
+            this.solutionPicker.Size = new System.Drawing.Size(446, 32);
+            this.solutionPicker.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(21, 48);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(89, 25);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Solution:";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // checkBox6
+            // 
+            this.checkBox6.AutoSize = true;
+            this.checkBox6.Location = new System.Drawing.Point(26, 130);
+            this.checkBox6.Name = "checkBox6";
+            this.checkBox6.Size = new System.Drawing.Size(121, 29);
+            this.checkBox6.TabIndex = 2;
+            this.checkBox6.Text = "Managed";
+            this.checkBox6.UseVisualStyleBackColor = true;
+            // 
+            // checkBox7
+            // 
+            this.checkBox7.AutoSize = true;
+            this.checkBox7.Location = new System.Drawing.Point(187, 119);
+            this.checkBox7.Name = "checkBox7";
+            this.checkBox7.Size = new System.Drawing.Size(254, 51);
+            this.checkBox7.TabIndex = 3;
+            this.checkBox7.Text = "Unmanaged";
+            this.checkBox7.UseVisualStyleBackColor = true;
             // 
             // MyPluginControl
             // 
@@ -224,6 +271,8 @@
             this.Load += new System.EventHandler(this.MyPluginControl_Load);
             this.toolStripMenu.ResumeLayout(false);
             this.toolStripMenu.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.FlowsGrid)).EndInit();
             this.groupBox3.ResumeLayout(false);
@@ -249,5 +298,9 @@
         private System.Windows.Forms.CheckBox checkBox5;
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.CheckBox checkBox4;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox solutionPicker;
+        private System.Windows.Forms.CheckBox checkBox7;
+        private System.Windows.Forms.CheckBox checkBox6;
     }
 }
