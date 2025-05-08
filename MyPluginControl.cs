@@ -4,17 +4,16 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Newtonsoft.Json;
 using System;
+using System.Activities.Statements;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XrmToolBox.Extensibility;
-using static ScintillaNET.Style;
 
 namespace HttpFlowFinder
 {
@@ -28,6 +27,8 @@ namespace HttpFlowFinder
 
         private string ENV_1;
 
+        private Dictionary<Guid, string> flowsCache = new Dictionary<Guid, string>();
+
         public MyPluginControl()
         {
             InitializeComponent();
@@ -36,7 +37,7 @@ namespace HttpFlowFinder
 
         private void MyPluginControl_Load(object sender, EventArgs e)
         {
-            ShowInfoNotification("This is a notification that can lead to XrmToolBox repository", new Uri("https://github.com/MscrmTools/XrmToolBox"));
+            // ShowInfoNotification("This is a notification that can lead to XrmToolBox repository", new Uri("https://github.com/MscrmTools/XrmToolBox"));
 
             // Loads or creates the settings for the plugin
             if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
@@ -51,21 +52,12 @@ namespace HttpFlowFinder
             }
         }
 
-
-        /// <summary>
-        /// This event occurs when the plugin is closed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void MyPluginControl_OnCloseTool(object sender, EventArgs e)
         {
             // Before leaving, save the settings
             SettingsManager.Instance.Save(GetType(), mySettings);
         }
 
-        /// <summary>
-        /// This event occurs when the connection has been updated in XrmToolBox
-        /// </summary>
         public override void UpdateConnection(IOrganizationService newService, ConnectionDetail detail, string actionName, object parameter)
         {
             base.UpdateConnection(newService, detail, actionName, parameter);
@@ -79,6 +71,8 @@ namespace HttpFlowFinder
                 mySettings.LastUsedOrganizationWebappUrl = detail.WebApplicationUrl;
                 LogInfo("Connection has changed to: {0}", detail.WebApplicationUrl);
             }
+
+            ExecuteMethod(GetSolutions);
         }
 
         private async Task<string> GetValidAccessTokenAsync(string tenantId)
@@ -162,7 +156,7 @@ namespace HttpFlowFinder
             }
 
             return TOKEN_FOR_CALLBACK;
-        }        
+        }
 
         private static FlowCallbackResponse GetCallback(string envId, string flowId, string token)
         {
@@ -176,8 +170,47 @@ namespace HttpFlowFinder
             return JsonConvert.DeserializeObject<FlowCallbackResponse>(json);
         }
 
+        private class FlowInfo
+        {
+            public string name { get; set; }
+            public Guid id { get; set; }
+            public string trigger { get; set; }
+            public string authType { get; set; }
+            public string users { get; set; }
+            public string schema { get; set; }
+            public int state { get; set; }
+        }
+
+        private List<FlowInfo> _flows = new List<FlowInfo>();
         private void GetHttpFlows()
         {
+            var selectedSolution = solutionPicker.SelectedItem as ListObject;
+
+            if (selectedSolution == null) return;
+
+            var solutionId = selectedSolution.Value;
+
+            var solutionFilter = solutionId != "1" ?
+                           $@"<link-entity name='solutioncomponent' from='objectid' to='workflowid' link-type='inner' alias='aa'>
+                                  <filter>
+                                    <condition attribute='solutionid' operator='eq' value='{solutionId}' />
+                                  </filter>
+                                </link-entity>" : "";
+
+            var activeFilter = activeCheck.Checked;
+            var draftFilter = draftCheck.Checked;
+            var suspFilter = suspendedCheck.Checked;
+
+            var flowFilter = "";
+            if (activeFilter || draftFilter || suspFilter)
+            {
+                flowFilter += $@"<filter type='or'>";
+                if (activeFilter) flowFilter += $@"<condition attribute='statecode' operator='eq' value='1' />";
+                if (draftFilter) flowFilter += $@"<condition attribute='statecode' operator='eq' value='0' />";
+                if (suspFilter) flowFilter += $@"<condition attribute='statecode' operator='eq' value='2' />";
+                flowFilter += "</filter>";
+            }
+
             WorkAsync(new WorkAsyncInfo
             {
                 Message = "Fetching flows",
@@ -187,11 +220,15 @@ namespace HttpFlowFinder
                                               <entity name='workflow'>
                                                 <attribute name='name' />
                                                 <attribute name='workflowid' />                                                
-                                                <attribute name='clientdata' />
+                                                <attribute name='clientdata' />                                                
+                                                <attribute name='statecode' />
                                                 <filter>
                                                   <condition attribute='category' operator='eq' value='5' />
                                                   <condition attribute='clientdata' operator='like' value='%""kind"":""Http"",%' />
                                                 </filter>
+                                                {flowFilter}
+                                                {solutionFilter}
+                                                <order attribute='name' />
                                               </entity>
                                             </fetch>";
                     var flows = Service.RetrieveMultiple(new FetchExpression(fetchHttpFlows)).Entities.ToList();
@@ -211,28 +248,54 @@ namespace HttpFlowFinder
 
                     if (result.Count == 0) return;
 
-                    //var TOKEN_FOR_FLOWS = await GetValidAccessTokenAsync(TENANT_ID);
+                    var TOKEN_FOR_FLOWS = await GetValidAccessTokenAsync(TENANT_ID);
 
                     foreach (var flow in result)
                     {
                         var flowId = flow.Id;
-                        var flowName = flow["name"];
+                        var flowName = (string)flow["name"];
+                        var flowState = ((OptionSetValue)flow["statecode"]).Value;
 
                         var clientData = JsonConvert.DeserializeObject<FlowClientData>((string)flow["clientdata"]);
 
                         var triggers = clientData.properties.definition.triggers;
 
                         var triggerAuthType = triggers.manual.inputs.triggerAuthenticationType;
+
+                        if (triggerAuthType == "All" && !anyoneCheck.Checked) continue;
+                        if (triggerAuthType == "Tenant" && !tenantCheck.Checked) continue;
+                        if (triggerAuthType == "User" && !usersCheck.Checked) continue;
+
                         var triggerAllowedUsers = triggers.manual.inputs.triggerAllowedUsers;
                         var schema = triggers.manual.inputs.schema;
 
                         var schema_string = schema == null ? "" : JsonConvert.SerializeObject(schema);
 
-                        //var flowCallback = GetCallback(ENV_1, flowId.ToString(), TOKEN_FOR_FLOWS);
-                        //if (flowCallback.response == null) { MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
-                        //var httpTrigger = flowCallback.response.value;
+                        var httpTrigger = "-";
 
-                        dataTable.Rows.Add(flowId, flowName, "-", triggerAuthType, triggerAllowedUsers, schema_string);
+                        if (flowsCache.ContainsKey(flowId)) httpTrigger = flowsCache[flowId];
+                        else
+                        {
+                            var flowCallback = GetCallback(ENV_1, flowId.ToString(), TOKEN_FOR_FLOWS);
+                            if (flowCallback.response == null) { MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+                            httpTrigger = flowCallback.response.value;
+                            flowsCache.Add(flowId, httpTrigger);
+                        }
+
+                        var flowInfo = new FlowInfo
+                        {
+                            name = flowName,
+                            id = flowId,
+                            state = flowState,
+                            trigger = httpTrigger,
+                            authType = triggerAuthType,
+                            users = triggerAllowedUsers,
+                            schema = schema_string,
+                        };
+                        if (!_flows.Any(f => f.id == flowId)) _flows.Add(flowInfo);
+
+                        var state = flowState == 0 ? "Draft" : flowState == 1 ? "Activated" : "Suspended";
+                        dataTable.Rows.Add(flowId, flowName, httpTrigger, triggerAuthType, triggerAllowedUsers, schema_string, state);
                     }
 
                     FlowsGrid.DataSource = dataTable;
@@ -240,7 +303,7 @@ namespace HttpFlowFinder
             });
         }
 
-        private void fetchFlowsBtn_Click(object sender, EventArgs e)
+        private void FetchFlowsBtn_Click(object sender, EventArgs e)
         {
             ExecuteMethod(GetHttpFlows);
         }
@@ -254,12 +317,13 @@ namespace HttpFlowFinder
             dataTable.Columns.Add("Authentication Type", typeof(string));
             dataTable.Columns.Add("Allowed Users", typeof(string));
             dataTable.Columns.Add("Schema", typeof(string));
+            dataTable.Columns.Add("State", typeof(string));
 
 
             FlowsGrid.DataSource = dataTable;
             FlowsGrid.Columns["ID"].Visible = false;
 
-            FlowsGrid.CellFormatting += dataGridView1_CellFormatting;
+            FlowsGrid.CellFormatting += DataGridView1_CellFormatting;
             FlowsGrid.RowTemplate.Height = 30;
 
             //FlowsGrid.Columns["Name"].Width = 180;
@@ -272,7 +336,7 @@ namespace HttpFlowFinder
         }
 
 
-        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             // Check if the column is the "name" column
             if (FlowsGrid.Columns[e.ColumnIndex].HeaderText == "Authentication Type" && e.Value != null)
@@ -296,11 +360,177 @@ namespace HttpFlowFinder
                     e.CellStyle.ForeColor = Color.White;
                 }
             }
+            else if (FlowsGrid.Columns[e.ColumnIndex].HeaderText == "State" && e.Value != null)
+            {
+                string cellValue = e.Value.ToString().ToLower();
+
+                // Change cell background color based on value
+                if (cellValue == "draft")
+                {
+                    e.CellStyle.BackColor = Color.Yellow;
+                    e.CellStyle.ForeColor = Color.White;
+                }
+                else if (cellValue == "activated")
+                {
+                    e.CellStyle.BackColor = Color.Green;
+                    e.CellStyle.ForeColor = Color.White;
+                }
+                else if (cellValue == "suspended")
+                {
+                    e.CellStyle.BackColor = Color.Gray;
+                    e.CellStyle.ForeColor = Color.White;
+                }
+            }
+        }
+        private class ListObject
+        {
+            public string Name { get; set; }
+            public string Value { get; set; }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void GetSolutions()
         {
+            var managed = managedCheck.Checked;
+            var unmanaged = unmanagedCheck.Checked;
 
+            var all = (managed && unmanaged) || (!managed && !unmanaged);
+
+            var message = $"Fetching All {(managed && !unmanaged ? "Managed " : "")}Solutions";
+            WorkAsync(new WorkAsyncInfo()
+            {
+                Message = message,
+                AsyncArgument = null,
+                Work = (worker, args) =>
+                {
+                    var query_ismanaged = managed;
+                    var query = new QueryExpression("solution");
+                    query.ColumnSet.AddColumns("friendlyname", "solutionid", "uniquename");
+                    query.AddOrder("friendlyname", OrderType.Ascending);
+
+                    if (!all) query.Criteria.AddCondition("ismanaged", ConditionOperator.Equal, query_ismanaged);
+
+                    args.Result = Service.RetrieveMultiple(query);
+                },
+                PostWorkCallBack = (args) =>
+                {
+                    if (args.Error != null)
+                    {
+                        MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    var result = args.Result as EntityCollection;
+
+                    solutionPicker.DataSource = new List<ListObject>();
+
+                    if (result != null)
+                    {
+                        var items = new List<ListObject>();
+
+                        items.Add(new ListObject()
+                        {
+                            Name = "<All Solutions>",
+                            Value = "1"
+                        });
+
+                        foreach (var sol in result.Entities)
+                        {
+                            var friendlyName = sol.Contains("friendlyname") ? (string)sol["friendlyname"] : "";
+                            var name = $"{friendlyName} ({sol["uniquename"]})";
+                            var solutionId = sol.Id.ToString();
+
+                            items.Add(new ListObject()
+                            {
+                                Name = name,
+                                Value = solutionId,
+                            });
+                        }
+
+                        solutionPicker.DataSource = items;
+                        solutionPicker.DisplayMember = "Name";
+                        solutionPicker.ValueMember = "Value";
+                    }
+                }
+            });
+        }
+
+        private void GetSolutionsBtn_Click(object sender, EventArgs e)
+        {
+            ExecuteMethod(GetSolutions);
+        }
+
+        private void ManagedCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            ExecuteMethod(GetSolutions);
+        }
+
+        private void UnmanagedCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            ExecuteMethod(GetSolutions);
+        }
+
+        private void OnSolutionSelected(object sender, EventArgs e)
+        {
+            ExecuteMethod(GetHttpFlows);
+        }
+
+
+        private void FilterFlows()
+        {
+            var active = activeCheck.Checked;
+            var draft = draftCheck.Checked;
+            var susp = suspendedCheck.Checked;
+
+            if (!active && !draft && !susp) return;
+
+            var filtered = _flows.Where(f =>
+                                (active && f.state == 1) ||
+                                (draft && f.state == 0) ||
+                                (susp && f.state == 2)
+                            );
+
+            filtered = filtered.Where(f =>
+                (anyoneCheck.Checked && f.authType == "All") ||
+                (tenantCheck.Checked && f.authType == "Tenant") ||
+                (usersCheck.Checked && f.authType == "User")
+            );
+
+            var dataTable = InitializeFlowView();
+
+            foreach (var flow in filtered)
+            {
+                var state = flow.state == 0 ? "Draft" : flow.state == 1 ? "Activated" : "Suspended";
+                dataTable.Rows.Add(flow.id, flow.name, flow.trigger, flow.authType, flow.users, flow.schema, state);
+            }
+
+            FlowsGrid.DataSource = dataTable;
+        }
+        private void SuspendedCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            FilterFlows();
+        }
+
+        private void ActiveCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            FilterFlows();
+        }
+
+        private void DraftCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            FilterFlows();
+        }
+
+        private void AnyoneCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            FilterFlows();
+        }
+
+        private void TenantCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            FilterFlows();
+        }
+
+        private void UsersCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            FilterFlows();
         }
     }
 }

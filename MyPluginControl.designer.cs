@@ -31,21 +31,23 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MyPluginControl));
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.loginBtn = new System.Windows.Forms.ToolStripButton();
+            this.getSolutionsBtn = new System.Windows.Forms.ToolStripButton();
             this.fetchFlowsBtn = new System.Windows.Forms.ToolStripButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.unmanagedCheck = new System.Windows.Forms.CheckBox();
+            this.managedCheck = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.solutionPicker = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.FlowsGrid = new System.Windows.Forms.DataGridView();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.suspendedCheck = new System.Windows.Forms.CheckBox();
+            this.draftCheck = new System.Windows.Forms.CheckBox();
+            this.activeCheck = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.solutionPicker = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
-            this.checkBox7 = new System.Windows.Forms.CheckBox();
+            this.usersCheck = new System.Windows.Forms.CheckBox();
+            this.tenantCheck = new System.Windows.Forms.CheckBox();
+            this.anyoneCheck = new System.Windows.Forms.CheckBox();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -59,11 +61,12 @@
             this.toolStripMenu.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStripMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loginBtn,
+            this.getSolutionsBtn,
             this.fetchFlowsBtn});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
             this.toolStripMenu.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.toolStripMenu.Size = new System.Drawing.Size(1673, 40);
+            this.toolStripMenu.Size = new System.Drawing.Size(2928, 40);
             this.toolStripMenu.TabIndex = 4;
             this.toolStripMenu.Text = "toolStrip1";
             // 
@@ -76,6 +79,16 @@
             this.loginBtn.Size = new System.Drawing.Size(68, 34);
             this.loginBtn.Text = "Login";
             // 
+            // getSolutionsBtn
+            // 
+            this.getSolutionsBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.getSolutionsBtn.Image = ((System.Drawing.Image)(resources.GetObject("getSolutionsBtn.Image")));
+            this.getSolutionsBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.getSolutionsBtn.Name = "getSolutionsBtn";
+            this.getSolutionsBtn.Size = new System.Drawing.Size(138, 34);
+            this.getSolutionsBtn.Text = "Get solutions";
+            this.getSolutionsBtn.Click += new System.EventHandler(this.GetSolutionsBtn_Click);
+            // 
             // fetchFlowsBtn
             // 
             this.fetchFlowsBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -84,24 +97,68 @@
             this.fetchFlowsBtn.Name = "fetchFlowsBtn";
             this.fetchFlowsBtn.Size = new System.Drawing.Size(121, 34);
             this.fetchFlowsBtn.Text = "Fetch flows";
-            this.fetchFlowsBtn.Click += new System.EventHandler(this.fetchFlowsBtn_Click);
+            this.fetchFlowsBtn.Click += new System.EventHandler(this.FetchFlowsBtn_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.checkBox7);
-            this.groupBox1.Controls.Add(this.checkBox6);
+            this.groupBox1.Controls.Add(this.unmanagedCheck);
+            this.groupBox1.Controls.Add(this.managedCheck);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.solutionPicker);
             this.groupBox1.Location = new System.Drawing.Point(6, 52);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox1.Size = new System.Drawing.Size(749, 190);
+            this.groupBox1.Size = new System.Drawing.Size(2004, 190);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Solution info";
+            // 
+            // unmanagedCheck
+            // 
+            this.unmanagedCheck.AutoSize = true;
+            this.unmanagedCheck.Checked = true;
+            this.unmanagedCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.unmanagedCheck.Location = new System.Drawing.Point(184, 130);
+            this.unmanagedCheck.Name = "unmanagedCheck";
+            this.unmanagedCheck.Size = new System.Drawing.Size(145, 29);
+            this.unmanagedCheck.TabIndex = 3;
+            this.unmanagedCheck.Text = "Unmanaged";
+            this.unmanagedCheck.UseVisualStyleBackColor = true;
+            this.unmanagedCheck.CheckedChanged += new System.EventHandler(this.UnmanagedCheck_CheckedChanged);
+            // 
+            // managedCheck
+            // 
+            this.managedCheck.AutoSize = true;
+            this.managedCheck.Checked = true;
+            this.managedCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.managedCheck.Location = new System.Drawing.Point(26, 130);
+            this.managedCheck.Name = "managedCheck";
+            this.managedCheck.Size = new System.Drawing.Size(121, 29);
+            this.managedCheck.TabIndex = 2;
+            this.managedCheck.Text = "Managed";
+            this.managedCheck.UseVisualStyleBackColor = true;
+            this.managedCheck.CheckedChanged += new System.EventHandler(this.ManagedCheck_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(21, 48);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(89, 25);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Solution:";
+            // 
+            // solutionPicker
+            // 
+            this.solutionPicker.FormattingEnabled = true;
+            this.solutionPicker.Location = new System.Drawing.Point(26, 81);
+            this.solutionPicker.Name = "solutionPicker";
+            this.solutionPicker.Size = new System.Drawing.Size(446, 32);
+            this.solutionPicker.TabIndex = 0;
+            this.solutionPicker.SelectedIndexChanged += new System.EventHandler(this.OnSolutionSelected);
             // 
             // groupBox2
             // 
@@ -113,7 +170,7 @@
             this.groupBox2.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox2.Size = new System.Drawing.Size(1662, 642);
+            this.groupBox2.Size = new System.Drawing.Size(2917, 1317);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Flows";
@@ -133,127 +190,118 @@
             this.FlowsGrid.Margin = new System.Windows.Forms.Padding(6);
             this.FlowsGrid.Name = "FlowsGrid";
             this.FlowsGrid.RowHeadersWidth = 72;
-            this.FlowsGrid.Size = new System.Drawing.Size(1640, 596);
+            this.FlowsGrid.Size = new System.Drawing.Size(2895, 1271);
             this.FlowsGrid.TabIndex = 0;
             // 
             // groupBox3
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.checkBox2);
-            this.groupBox3.Controls.Add(this.checkBox1);
+            this.groupBox3.Controls.Add(this.suspendedCheck);
+            this.groupBox3.Controls.Add(this.draftCheck);
+            this.groupBox3.Controls.Add(this.activeCheck);
             this.groupBox3.Location = new System.Drawing.Point(767, 52);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox3.Size = new System.Drawing.Size(429, 190);
+            this.groupBox3.Size = new System.Drawing.Size(1684, 190);
             this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Flow filters";
             // 
-            // checkBox2
+            // suspendedCheck
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(19, 83);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(94, 29);
-            this.checkBox2.TabIndex = 1;
-            this.checkBox2.Text = "Inctive";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.suspendedCheck.AutoSize = true;
+            this.suspendedCheck.Checked = true;
+            this.suspendedCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.suspendedCheck.Location = new System.Drawing.Point(19, 118);
+            this.suspendedCheck.Name = "suspendedCheck";
+            this.suspendedCheck.Size = new System.Drawing.Size(139, 29);
+            this.suspendedCheck.TabIndex = 2;
+            this.suspendedCheck.Text = "Suspended";
+            this.suspendedCheck.UseVisualStyleBackColor = true;
+            this.suspendedCheck.CheckedChanged += new System.EventHandler(this.SuspendedCheck_CheckedChanged);
             // 
-            // checkBox1
+            // draftCheck
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(19, 48);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(92, 29);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Active";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.draftCheck.AutoSize = true;
+            this.draftCheck.Checked = true;
+            this.draftCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.draftCheck.Location = new System.Drawing.Point(19, 83);
+            this.draftCheck.Name = "draftCheck";
+            this.draftCheck.Size = new System.Drawing.Size(79, 29);
+            this.draftCheck.TabIndex = 1;
+            this.draftCheck.Text = "Draft";
+            this.draftCheck.UseVisualStyleBackColor = true;
+            this.draftCheck.CheckedChanged += new System.EventHandler(this.DraftCheck_CheckedChanged);
+            // 
+            // activeCheck
+            // 
+            this.activeCheck.AutoSize = true;
+            this.activeCheck.Checked = true;
+            this.activeCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.activeCheck.Location = new System.Drawing.Point(19, 48);
+            this.activeCheck.Name = "activeCheck";
+            this.activeCheck.Size = new System.Drawing.Size(103, 29);
+            this.activeCheck.TabIndex = 0;
+            this.activeCheck.Text = "Actived";
+            this.activeCheck.UseVisualStyleBackColor = true;
+            this.activeCheck.CheckedChanged += new System.EventHandler(this.ActiveCheck_CheckedChanged);
             // 
             // groupBox4
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox4.Controls.Add(this.checkBox5);
-            this.groupBox4.Controls.Add(this.checkBox3);
-            this.groupBox4.Controls.Add(this.checkBox4);
+            this.groupBox4.Controls.Add(this.usersCheck);
+            this.groupBox4.Controls.Add(this.tenantCheck);
+            this.groupBox4.Controls.Add(this.anyoneCheck);
             this.groupBox4.Location = new System.Drawing.Point(1208, 52);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox4.Size = new System.Drawing.Size(460, 190);
+            this.groupBox4.Size = new System.Drawing.Size(1715, 190);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Auth type";
             // 
-            // checkBox5
+            // usersCheck
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(18, 118);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(160, 29);
-            this.checkBox5.TabIndex = 4;
-            this.checkBox5.Text = "Specific users";
-            this.checkBox5.UseVisualStyleBackColor = true;
+            this.usersCheck.AutoSize = true;
+            this.usersCheck.Checked = true;
+            this.usersCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.usersCheck.Location = new System.Drawing.Point(18, 118);
+            this.usersCheck.Name = "usersCheck";
+            this.usersCheck.Size = new System.Drawing.Size(160, 29);
+            this.usersCheck.TabIndex = 4;
+            this.usersCheck.Text = "Specific users";
+            this.usersCheck.UseVisualStyleBackColor = true;
+            this.usersCheck.CheckedChanged += new System.EventHandler(this.UsersCheck_CheckedChanged);
             // 
-            // checkBox3
+            // tenantCheck
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(18, 83);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(190, 29);
-            this.checkBox3.TabIndex = 3;
-            this.checkBox3.Text = "Anyone in tentant";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.tenantCheck.AutoSize = true;
+            this.tenantCheck.Checked = true;
+            this.tenantCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tenantCheck.Location = new System.Drawing.Point(18, 83);
+            this.tenantCheck.Name = "tenantCheck";
+            this.tenantCheck.Size = new System.Drawing.Size(190, 29);
+            this.tenantCheck.TabIndex = 3;
+            this.tenantCheck.Text = "Anyone in tentant";
+            this.tenantCheck.UseVisualStyleBackColor = true;
+            this.tenantCheck.CheckedChanged += new System.EventHandler(this.TenantCheck_CheckedChanged);
             // 
-            // checkBox4
+            // anyoneCheck
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(18, 48);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(106, 29);
-            this.checkBox4.TabIndex = 2;
-            this.checkBox4.Text = "Anyone";
-            this.checkBox4.UseVisualStyleBackColor = true;
-            // 
-            // solutionPicker
-            // 
-            this.solutionPicker.FormattingEnabled = true;
-            this.solutionPicker.Location = new System.Drawing.Point(26, 81);
-            this.solutionPicker.Name = "solutionPicker";
-            this.solutionPicker.Size = new System.Drawing.Size(446, 32);
-            this.solutionPicker.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(21, 48);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(89, 25);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Solution:";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
-            // 
-            // checkBox6
-            // 
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(26, 130);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(121, 29);
-            this.checkBox6.TabIndex = 2;
-            this.checkBox6.Text = "Managed";
-            this.checkBox6.UseVisualStyleBackColor = true;
-            // 
-            // checkBox7
-            // 
-            this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(187, 119);
-            this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(254, 51);
-            this.checkBox7.TabIndex = 3;
-            this.checkBox7.Text = "Unmanaged";
-            this.checkBox7.UseVisualStyleBackColor = true;
+            this.anyoneCheck.AutoSize = true;
+            this.anyoneCheck.Checked = true;
+            this.anyoneCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.anyoneCheck.Location = new System.Drawing.Point(18, 48);
+            this.anyoneCheck.Name = "anyoneCheck";
+            this.anyoneCheck.Size = new System.Drawing.Size(106, 29);
+            this.anyoneCheck.TabIndex = 2;
+            this.anyoneCheck.Text = "Anyone";
+            this.anyoneCheck.UseVisualStyleBackColor = true;
+            this.anyoneCheck.CheckedChanged += new System.EventHandler(this.AnyoneCheck_CheckedChanged);
             // 
             // MyPluginControl
             // 
@@ -267,7 +315,7 @@
             this.Controls.Add(this.toolStripMenu);
             this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "MyPluginControl";
-            this.Size = new System.Drawing.Size(1673, 900);
+            this.Size = new System.Drawing.Size(2928, 1575);
             this.Load += new System.EventHandler(this.MyPluginControl_Load);
             this.toolStripMenu.ResumeLayout(false);
             this.toolStripMenu.PerformLayout();
@@ -292,15 +340,17 @@
         private System.Windows.Forms.ToolStripButton fetchFlowsBtn;
         private System.Windows.Forms.ToolStripButton loginBtn;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox draftCheck;
+        private System.Windows.Forms.CheckBox activeCheck;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.CheckBox checkBox5;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.CheckBox checkBox4;
+        private System.Windows.Forms.CheckBox usersCheck;
+        private System.Windows.Forms.CheckBox tenantCheck;
+        private System.Windows.Forms.CheckBox anyoneCheck;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox solutionPicker;
-        private System.Windows.Forms.CheckBox checkBox7;
-        private System.Windows.Forms.CheckBox checkBox6;
+        private System.Windows.Forms.CheckBox unmanagedCheck;
+        private System.Windows.Forms.CheckBox managedCheck;
+        private System.Windows.Forms.ToolStripButton getSolutionsBtn;
+        private System.Windows.Forms.CheckBox suspendedCheck;
     }
 }
