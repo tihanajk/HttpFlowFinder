@@ -29,6 +29,8 @@ namespace HttpFlowFinder
 
         private Dictionary<Guid, string> flowsCache = new Dictionary<Guid, string>();
 
+        private ConnectionDetail CONNECTION;
+
         public MyPluginControl()
         {
             InitializeComponent();
@@ -65,13 +67,15 @@ namespace HttpFlowFinder
         {
             base.UpdateConnection(newService, detail, actionName, parameter);
 
-            if (!string.IsNullOrWhiteSpace(ConnectionDetail.S2SClientSecret))
-            {
-                ShowInfoNotification(
-                   "You are using the deprecated connection method. Please use OAuth/MFA or Client ID/Secret method.",
-                   new Uri("https://learn.microsoft.com/en-us/power-platform/admin/manage-application-users#create-an-application-user")
-                   );
-            }
+            //if (!string.IsNullOrWhiteSpace(ConnectionDetail.S2SClientSecret))
+            //{
+            //    ShowInfoNotification(
+            //       "You are using the deprecated connection method. Please use OAuth/MFA or Client ID/Secret method.",
+            //       new Uri("https://learn.microsoft.com/en-us/power-platform/admin/manage-application-users#create-an-application-user")
+            //       );
+            //}
+
+            CONNECTION = detail;
 
             TENANT_ID = detail.TenantId;
 
@@ -556,6 +560,35 @@ namespace HttpFlowFinder
         private void SearchBox_TextChanged(object sender, EventArgs e)
         {
             FilterFlows();
+        }
+
+        private void LoginBtn_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(CONNECTION.S2SClientSecret))
+            {
+                MessageBox.Show(
+                    "You are using the deprecated connection method. Please use OAuth/MFA or Client ID/Secret method.",
+                    "Deprecated Connection",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            if (!IsTokenExpired(TOKEN_FOR_CALLBACK))
+            {
+                MessageBox.Show(
+                    "Token is still valid",
+                    "Good Connection",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                return;
+            }
+
+            var token = GetValidAccessTokenAsync(TENANT_ID);
+
+
         }
     }
 }

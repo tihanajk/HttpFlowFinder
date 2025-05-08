@@ -39,6 +39,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.solutionPicker = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.searchBox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.FlowsGrid = new System.Windows.Forms.DataGridView();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.suspendedCheck = new System.Windows.Forms.CheckBox();
@@ -48,8 +50,6 @@
             this.usersCheck = new System.Windows.Forms.CheckBox();
             this.tenantCheck = new System.Windows.Forms.CheckBox();
             this.anyoneCheck = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.searchBox = new System.Windows.Forms.TextBox();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -80,6 +80,7 @@
             this.loginBtn.Name = "loginBtn";
             this.loginBtn.Size = new System.Drawing.Size(68, 34);
             this.loginBtn.Text = "Login";
+            this.loginBtn.Click += new System.EventHandler(this.LoginBtn_Click);
             // 
             // getSolutionsBtn
             // 
@@ -178,6 +179,23 @@
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Flows";
+            // 
+            // searchBox
+            // 
+            this.searchBox.Location = new System.Drawing.Point(75, 36);
+            this.searchBox.Name = "searchBox";
+            this.searchBox.Size = new System.Drawing.Size(614, 29);
+            this.searchBox.TabIndex = 2;
+            this.searchBox.TextChanged += new System.EventHandler(this.SearchBox_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 39);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(60, 25);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Filter:";
             // 
             // FlowsGrid
             // 
@@ -306,23 +324,6 @@
             this.anyoneCheck.Text = "Anyone";
             this.anyoneCheck.UseVisualStyleBackColor = true;
             this.anyoneCheck.CheckedChanged += new System.EventHandler(this.AnyoneCheck_CheckedChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 39);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(60, 25);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Filter:";
-            // 
-            // searchBox
-            // 
-            this.searchBox.Location = new System.Drawing.Point(75, 36);
-            this.searchBox.Name = "searchBox";
-            this.searchBox.Size = new System.Drawing.Size(614, 29);
-            this.searchBox.TabIndex = 2;
-            this.searchBox.TextChanged += new System.EventHandler(this.SearchBox_TextChanged);
             // 
             // MyPluginControl
             // 
