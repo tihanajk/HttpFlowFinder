@@ -365,7 +365,7 @@ namespace HttpFlowFinder
                 if (cellValue == "draft")
                 {
                     e.CellStyle.BackColor = Color.Yellow;
-                    e.CellStyle.ForeColor = Color.White;
+                    e.CellStyle.ForeColor = Color.Black;
                 }
                 else if (cellValue == "activated")
                 {
@@ -534,7 +534,7 @@ namespace HttpFlowFinder
 
         private void UsersCheck_CheckedChanged(object sender, EventArgs e)
         {
-            
+            FilterFlows();
         }
 
         private void SearchBox_TextChanged(object sender, EventArgs e)
