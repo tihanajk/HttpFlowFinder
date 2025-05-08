@@ -323,6 +323,8 @@ namespace HttpFlowFinder
                     }
 
                     FlowsGrid.DataSource = dataTable;
+
+                    flowsCounter.Text = dataTable.Rows.Count.ToString();
                 }
             });
         }
@@ -514,7 +516,7 @@ namespace HttpFlowFinder
             var term = searchBox.Text;
             if (!string.IsNullOrEmpty(term))
             {
-                filtered = filtered.Where(f => f.name.Contains(term));
+                filtered = filtered.Where(f => f.name.ToLower().Contains(term.ToLower()));
             }
 
             var dataTable = InitializeFlowView();
@@ -526,6 +528,7 @@ namespace HttpFlowFinder
             }
 
             FlowsGrid.DataSource = dataTable;
+            flowsCounter.Text = dataTable.Rows.Count.ToString();
         }
         private void SuspendedCheck_CheckedChanged(object sender, EventArgs e)
         {
