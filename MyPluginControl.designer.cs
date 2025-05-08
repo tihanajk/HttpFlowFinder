@@ -48,6 +48,8 @@
             this.usersCheck = new System.Windows.Forms.CheckBox();
             this.tenantCheck = new System.Windows.Forms.CheckBox();
             this.anyoneCheck = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.searchBox = new System.Windows.Forms.TextBox();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -165,6 +167,8 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.searchBox);
+            this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.FlowsGrid);
             this.groupBox2.Location = new System.Drawing.Point(6, 253);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(6);
@@ -186,11 +190,11 @@
             this.FlowsGrid.BackgroundColor = System.Drawing.SystemColors.InactiveCaption;
             this.FlowsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.FlowsGrid.GridColor = System.Drawing.SystemColors.MenuHighlight;
-            this.FlowsGrid.Location = new System.Drawing.Point(11, 35);
+            this.FlowsGrid.Location = new System.Drawing.Point(11, 87);
             this.FlowsGrid.Margin = new System.Windows.Forms.Padding(6);
             this.FlowsGrid.Name = "FlowsGrid";
             this.FlowsGrid.RowHeadersWidth = 72;
-            this.FlowsGrid.Size = new System.Drawing.Size(2895, 1271);
+            this.FlowsGrid.Size = new System.Drawing.Size(2895, 1219);
             this.FlowsGrid.TabIndex = 0;
             // 
             // groupBox3
@@ -303,6 +307,23 @@
             this.anyoneCheck.UseVisualStyleBackColor = true;
             this.anyoneCheck.CheckedChanged += new System.EventHandler(this.AnyoneCheck_CheckedChanged);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 39);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(60, 25);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Filter:";
+            // 
+            // searchBox
+            // 
+            this.searchBox.Location = new System.Drawing.Point(75, 36);
+            this.searchBox.Name = "searchBox";
+            this.searchBox.Size = new System.Drawing.Size(614, 29);
+            this.searchBox.TabIndex = 2;
+            this.searchBox.TextChanged += new System.EventHandler(this.SearchBox_TextChanged);
+            // 
             // MyPluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -322,6 +343,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FlowsGrid)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -352,5 +374,7 @@
         private System.Windows.Forms.CheckBox managedCheck;
         private System.Windows.Forms.ToolStripButton getSolutionsBtn;
         private System.Windows.Forms.CheckBox suspendedCheck;
+        private System.Windows.Forms.TextBox searchBox;
+        private System.Windows.Forms.Label label2;
     }
 }

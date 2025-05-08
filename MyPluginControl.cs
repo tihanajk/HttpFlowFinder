@@ -323,18 +323,11 @@ namespace HttpFlowFinder
             dataTable.Columns.Add("Schema", typeof(string));
             dataTable.Columns.Add("State", typeof(string));
 
-
             FlowsGrid.DataSource = dataTable;
             FlowsGrid.Columns["ID"].Visible = false;
 
             FlowsGrid.CellFormatting += DataGridView1_CellFormatting;
             FlowsGrid.RowTemplate.Height = 30;
-
-            //FlowsGrid.Columns["Name"].Width = 180;
-            //FlowsGrid.Columns["Trigger"].Width = 180;
-            //FlowsGrid.Columns["Authentication Type"].Width = 180;
-            //FlowsGrid.Columns["Allowed Users"].Width = 180;
-            //FlowsGrid.Columns["Trigger"].Width = 180;
 
             return dataTable;
         }
@@ -498,6 +491,12 @@ namespace HttpFlowFinder
                 (usersCheck.Checked && f.authType == "User")
             );
 
+            var term = searchBox.Text;
+            if (!string.IsNullOrEmpty(term))
+            {
+                filtered = filtered.Where(f => f.name.Contains(term));
+            }
+
             var dataTable = InitializeFlowView();
 
             foreach (var flow in filtered)
@@ -534,6 +533,11 @@ namespace HttpFlowFinder
         }
 
         private void UsersCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void SearchBox_TextChanged(object sender, EventArgs e)
         {
             FilterFlows();
         }
