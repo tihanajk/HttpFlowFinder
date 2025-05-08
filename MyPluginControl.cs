@@ -23,9 +23,9 @@ namespace HttpFlowFinder
 
         private string TOKEN_FOR_CALLBACK = "";
 
-        private string TENANT_ID;
+        private Guid TENANT_ID;
 
-        private string ENV_1;
+        private string ENV_1 = "";
 
         private Dictionary<Guid, string> flowsCache = new Dictionary<Guid, string>();
 
@@ -37,7 +37,10 @@ namespace HttpFlowFinder
 
         private void MyPluginControl_Load(object sender, EventArgs e)
         {
-            // ShowInfoNotification("This is a notification that can lead to XrmToolBox repository", new Uri("https://github.com/MscrmTools/XrmToolBox"));
+            if (ConnectionDetail.TenantId == Guid.Empty)
+            {
+                ShowInfoNotification("You are using the deprecated connection method. Please use OAuth/MFA or Client ID/Secret method.", new Uri("https://github.com/MscrmTools/XrmToolBox"));
+            }
 
             // Loads or creates the settings for the plugin
             if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
@@ -62,9 +65,17 @@ namespace HttpFlowFinder
         {
             base.UpdateConnection(newService, detail, actionName, parameter);
 
-            TENANT_ID = detail.TenantId.ToString();
+            if (!string.IsNullOrWhiteSpace(ConnectionDetail.S2SClientSecret))
+            {
+                ShowInfoNotification(
+                   "You are using the deprecated connection method. Please use OAuth/MFA or Client ID/Secret method.",
+                   new Uri("https://learn.microsoft.com/en-us/power-platform/admin/manage-application-users#create-an-application-user")
+                   );
+            }
 
-            ENV_1 = detail.EnvironmentId.ToString();
+            TENANT_ID = detail.TenantId;
+
+            ENV_1 = detail?.EnvironmentId?.ToString();
 
             if (mySettings != null && detail != null)
             {
@@ -75,8 +86,9 @@ namespace HttpFlowFinder
             ExecuteMethod(GetSolutions);
         }
 
-        private async Task<string> GetValidAccessTokenAsync(string tenantId)
+        private async Task<string> GetValidAccessTokenAsync(Guid tenantId)
         {
+            if (tenantId == Guid.Empty) return "";
             if (!IsTokenExpired(TOKEN_FOR_CALLBACK)) return TOKEN_FOR_CALLBACK;
             return await GetAccessTokenForListCallbackUrl(tenantId);
         }
@@ -109,7 +121,7 @@ namespace HttpFlowFinder
             public string id_token { get; set; }
         }
 
-        private async Task<string> GetAccessTokenForListCallbackUrl(string tenantId)
+        private async Task<string> GetAccessTokenForListCallbackUrl(Guid tenantId)
         {
             var clientId = "51f81489-12ee-4a9e-aaae-a2591f45987d";
             var redirectUri = "app://58145B91-0C36-4500-8554-080854F2AC97";
@@ -127,7 +139,7 @@ namespace HttpFlowFinder
 
                 authResult = await app
                     .AcquireTokenSilent(scopes, account)
-                    .WithTenantId(tenantId)
+                    .WithTenantId(tenantId.ToString())
                     .ExecuteAsync();
 
                 TOKEN_FOR_CALLBACK = authResult.AccessToken;
@@ -139,7 +151,7 @@ namespace HttpFlowFinder
                 {
                     authResult = await app
                         .AcquireTokenInteractive(scopes)
-                        .WithTenantId(tenantId)
+                        .WithTenantId(tenantId.ToString())
                         .ExecuteAsync();
 
                     TOKEN_FOR_CALLBACK = authResult.AccessToken;
@@ -185,6 +197,7 @@ namespace HttpFlowFinder
         private string prevSolutionSelected = "";
         private void GetHttpFlows()
         {
+
             var selectedSolution = solutionPicker.SelectedItem as ListObject;
 
             if (selectedSolution == null) return;
@@ -265,6 +278,7 @@ namespace HttpFlowFinder
                         var triggers = clientData.properties.definition.triggers;
 
                         var triggerAuthType = triggers.manual.inputs.triggerAuthenticationType;
+                        if (triggerAuthType == "" || triggerAuthType == null) triggerAuthType = "All";
 
                         if (triggerAuthType == "All" && !anyoneCheck.Checked) continue;
                         if (triggerAuthType == "Tenant" && !tenantCheck.Checked) continue;
@@ -278,11 +292,13 @@ namespace HttpFlowFinder
                         var httpTrigger = "-";
 
                         if (flowsCache.ContainsKey(flowId)) httpTrigger = flowsCache[flowId];
-                        else
+                        else if (TOKEN_FOR_FLOWS != "")
                         {
                             var flowCallback = GetCallback(ENV_1, flowId.ToString(), TOKEN_FOR_FLOWS);
-                            if (flowCallback.response == null) { MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
-                            httpTrigger = flowCallback.response.value;
+                            if (flowCallback.response != null)
+                            {
+                                httpTrigger = flowCallback.response.value;
+                            }
                             flowsCache.Add(flowId, httpTrigger);
                         }
 

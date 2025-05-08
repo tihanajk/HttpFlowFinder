@@ -63,7 +63,7 @@ public class Inputs
 {
     public string triggerAuthenticationType { get; set; }
     public string triggerAllowedUsers { get; set; }
-    public Schema schema { get; set; }
+    public object schema { get; set; }
 }
 
 public class Schema
