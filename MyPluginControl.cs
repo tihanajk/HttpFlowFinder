@@ -182,6 +182,7 @@ namespace HttpFlowFinder
         }
 
         private List<FlowInfo> _flows = new List<FlowInfo>();
+        private string prevSolutionSelected = "";
         private void GetHttpFlows()
         {
             var selectedSolution = solutionPicker.SelectedItem as ListObject;
@@ -189,6 +190,9 @@ namespace HttpFlowFinder
             if (selectedSolution == null) return;
 
             var solutionId = selectedSolution.Value;
+            if (prevSolutionSelected == solutionId) return;
+
+            prevSolutionSelected = solutionId;
 
             var solutionFilter = solutionId != "1" ?
                            $@"<link-entity name='solutioncomponent' from='objectid' to='workflowid' link-type='inner' alias='aa'>
@@ -466,6 +470,7 @@ namespace HttpFlowFinder
         {
             ExecuteMethod(GetSolutions);
         }
+
 
         private void OnSolutionSelected(object sender, EventArgs e)
         {
