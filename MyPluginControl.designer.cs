@@ -39,6 +39,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.solutionPicker = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.loadingIndicator = new System.Windows.Forms.Label();
+            this.flowsCounter = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.searchBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.FlowsGrid = new System.Windows.Forms.DataGridView();
@@ -50,8 +53,6 @@
             this.usersCheck = new System.Windows.Forms.CheckBox();
             this.tenantCheck = new System.Windows.Forms.CheckBox();
             this.anyoneCheck = new System.Windows.Forms.CheckBox();
-            this.flowsCounter = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -170,6 +171,7 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.loadingIndicator);
             this.groupBox2.Controls.Add(this.flowsCounter);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.searchBox);
@@ -183,6 +185,34 @@
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Flows";
+            // 
+            // loadingIndicator
+            // 
+            this.loadingIndicator.AutoSize = true;
+            this.loadingIndicator.Location = new System.Drawing.Point(965, 40);
+            this.loadingIndicator.Name = "loadingIndicator";
+            this.loadingIndicator.Size = new System.Drawing.Size(97, 25);
+            this.loadingIndicator.TabIndex = 9;
+            this.loadingIndicator.Text = "Loading...";
+            // 
+            // flowsCounter
+            // 
+            this.flowsCounter.AutoSize = true;
+            this.flowsCounter.Location = new System.Drawing.Point(862, 40);
+            this.flowsCounter.Name = "flowsCounter";
+            this.flowsCounter.Size = new System.Drawing.Size(23, 25);
+            this.flowsCounter.TabIndex = 8;
+            this.flowsCounter.Text = "0";
+            this.flowsCounter.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(734, 39);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(122, 25);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Flows count:";
             // 
             // searchBox
             // 
@@ -329,25 +359,6 @@
             this.anyoneCheck.UseVisualStyleBackColor = true;
             this.anyoneCheck.CheckedChanged += new System.EventHandler(this.AnyoneCheck_CheckedChanged);
             // 
-            // flowsCounter
-            // 
-            this.flowsCounter.AutoSize = true;
-            this.flowsCounter.Location = new System.Drawing.Point(862, 40);
-            this.flowsCounter.Name = "flowsCounter";
-            this.flowsCounter.Size = new System.Drawing.Size(23, 25);
-            this.flowsCounter.TabIndex = 8;
-            this.flowsCounter.Text = "0";
-            this.flowsCounter.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(734, 39);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(122, 25);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "Flows count:";
-            // 
             // MyPluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -402,5 +413,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label flowsCounter;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label loadingIndicator;
     }
 }

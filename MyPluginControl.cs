@@ -7,6 +7,7 @@ using System;
 using System.Activities.Statements;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace HttpFlowFinder
         {
             if (ConnectionDetail.TenantId == Guid.Empty)
             {
-                ShowInfoNotification("You are using the deprecated connection method. Please use OAuth/MFA or Client ID/Secret method.", new Uri("https://github.com/MscrmTools/XrmToolBox"));
+                ShowInfoNotification("You are using the deprecated connection method. Please use OAuth/MFA or Client ID/Secret method if you want to see the triggers", new Uri("https://learn.microsoft.com/en-us/power-platform/admin/manage-application-users#create-an-application-user"));
             }
 
             // Loads or creates the settings for the plugin
@@ -195,6 +196,7 @@ namespace HttpFlowFinder
             public string users { get; set; }
             public string schema { get; set; }
             public int state { get; set; }
+            public string link { get; set; }
         }
 
         private List<FlowInfo> _flows = new List<FlowInfo>();
@@ -245,7 +247,7 @@ namespace HttpFlowFinder
                                                 <attribute name='statecode' />
                                                 <filter>
                                                   <condition attribute='category' operator='eq' value='5' />
-                                                  <condition attribute='clientdata' operator='like' value='%""kind"":""Http"",%' />
+                                                  <condition attribute='clientdata' operator='like' value='%""type"":""Request"",""kind"":""Http"",%' />
                                                 </filter>
                                                 {flowFilter}
                                                 {solutionFilter}
@@ -264,15 +266,17 @@ namespace HttpFlowFinder
                     }
                     var result = args.Result as List<Entity>;
 
-
                     var dataTable = InitializeFlowView();
 
                     if (result.Count == 0) return;
 
                     var TOKEN_FOR_FLOWS = await GetValidAccessTokenAsync(TENANT_ID);
 
+                    var i = 0;
                     foreach (var flow in result)
                     {
+                        i++;
+                        loadingIndicator.Text = $"Loading {i}/{result.Count}";
                         var flowId = flow.Id;
                         var flowName = (string)flow["name"];
                         var flowState = ((OptionSetValue)flow["statecode"]).Value;
@@ -306,6 +310,7 @@ namespace HttpFlowFinder
                             flowsCache.Add(flowId, httpTrigger);
                         }
 
+                        var link = $"https://make.powerautomate.com/environments/{ENV_1}/flows/{flowId}/details";
                         var flowInfo = new FlowInfo
                         {
                             name = flowName,
@@ -315,16 +320,19 @@ namespace HttpFlowFinder
                             authType = triggerAuthType,
                             users = triggerAllowedUsers,
                             schema = schema_string,
+                            link = link
                         };
                         if (!_flows.Any(f => f.id == flowId)) _flows.Add(flowInfo);
 
                         var state = flowState == 0 ? "Draft" : flowState == 1 ? "Activated" : "Suspended";
-                        dataTable.Rows.Add(flowId, flowName, httpTrigger, triggerAuthType, triggerAllowedUsers, schema_string, state);
+                        dataTable.Rows.Add(flowId, flowName, httpTrigger, triggerAuthType, triggerAllowedUsers, schema_string, state, link);
                     }
 
                     FlowsGrid.DataSource = dataTable;
 
                     flowsCounter.Text = dataTable.Rows.Count.ToString();
+
+                    loadingIndicator.Text = "";
                 }
             });
         }
@@ -344,16 +352,58 @@ namespace HttpFlowFinder
             dataTable.Columns.Add("Allowed Users", typeof(string));
             dataTable.Columns.Add("Schema", typeof(string));
             dataTable.Columns.Add("State", typeof(string));
+            dataTable.Columns.Add("Link", typeof(string));
 
             FlowsGrid.DataSource = dataTable;
             FlowsGrid.Columns["ID"].Visible = false;
+            FlowsGrid.Columns["Link"].Visible = false;
 
             FlowsGrid.CellFormatting += DataGridView1_CellFormatting;
             FlowsGrid.RowTemplate.Height = 30;
 
+            if (FlowsGrid.Columns["LinkButton"] == null)
+            {
+                DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
+                buttonColumn.HeaderText = "";
+                buttonColumn.Name = "LinkButton";
+                buttonColumn.Text = "Open flow";
+                buttonColumn.UseColumnTextForButtonValue = true;
+                buttonColumn.Width = 50;
+                FlowsGrid.Columns.Add(buttonColumn);
+            }
+
+            FlowsGrid.CellContentClick -= HandleFlowItemClick;
+            FlowsGrid.CellContentClick += HandleFlowItemClick;
+
             return dataTable;
         }
 
+        private void HandleFlowItemClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == FlowsGrid.Columns["LinkButton"]?.Index && e.RowIndex >= 0)
+            {
+                int rowIndex = e.RowIndex;
+                var link = (string)FlowsGrid.Rows[rowIndex].Cells["Link"].Value;
+
+                OpenLink(link);
+            }
+        }
+
+        private void OpenLink(string url)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while trying to open the link: " + ex.Message);
+            }
+        }
 
         private void DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
@@ -516,7 +566,7 @@ namespace HttpFlowFinder
             var term = searchBox.Text;
             if (!string.IsNullOrEmpty(term))
             {
-                filtered = filtered.Where(f => f.name.ToLower().Contains(term.ToLower()));
+                filtered = filtered.Where(f => f.name.ToLower().Contains(term.ToLower()) || f.trigger.ToLower().Contains(term.ToLower()));
             }
 
             var dataTable = InitializeFlowView();
@@ -524,7 +574,7 @@ namespace HttpFlowFinder
             foreach (var flow in filtered)
             {
                 var state = flow.state == 0 ? "Draft" : flow.state == 1 ? "Activated" : "Suspended";
-                dataTable.Rows.Add(flow.id, flow.name, flow.trigger, flow.authType, flow.users, flow.schema, state);
+                dataTable.Rows.Add(flow.id, flow.name, flow.trigger, flow.authType, flow.users, flow.schema, state, flow.link);
             }
 
             FlowsGrid.DataSource = dataTable;
@@ -589,9 +639,7 @@ namespace HttpFlowFinder
                 return;
             }
 
-            var token = GetValidAccessTokenAsync(TENANT_ID);
-
-
+            GetValidAccessTokenAsync(TENANT_ID);
         }
     }
 }
