@@ -310,7 +310,7 @@ namespace HttpFlowFinder
                             flowsCache.Add(flowId, httpTrigger);
                         }
 
-                        var link = $"https://make.powerautomate.com/environments/{ENV_1}/flows/{flowId}/details";
+                        var link = $"https://make.powerautomate.com/environments/{ENV_1}/{(solutionId == "1" ? "" : $"solutions/{solutionId}/")}flows/{flowId}/details";
                         var flowInfo = new FlowInfo
                         {
                             name = flowName,
