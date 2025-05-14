@@ -3,6 +3,7 @@ using McTools.Xrm.Connection;
 using Microsoft.Identity.Client;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using Microsoft.Xrm.Tooling.CrmConnectControl.Utility;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -292,8 +293,8 @@ namespace HttpFlowFinder
                             if (flowCallback.response != null)
                             {
                                 httpTrigger = flowCallback.response.value;
+                                flowsCache.Add(flowId, httpTrigger);
                             }
-                            flowsCache.Add(flowId, httpTrigger);
                         }
 
                         var link = $"https://make.powerautomate.com/environments/{ENV_1}/{(solutionId == "1" ? "" : $"solutions/{solutionId}/")}flows/{flowId}/details";
@@ -309,8 +310,13 @@ namespace HttpFlowFinder
                             schema = schema_string,
                             link = link
                         };
-                        if (!_flows.Any(f => f.id == flowId)) _flows.Add(flowInfo);
-                        if (!_filtered.Any(f => f.id == flowId)) _filtered.Add(flowInfo);
+                        var index = _flows.FindIndex(f => f.id == flowId);
+                        if (index == -1)
+                            _flows.Add(flowInfo);
+                        else
+                            _flows[index] = flowInfo;
+
+                        _filtered = _flows.ToList();
 
                         var state = flowState == 0 ? "Draft" : flowState == 1 ? "Activated" : "Suspended";
                         dataTable.Rows.Add(flowId, flowName, httpTrigger, triggerAuthType, triggerAllowedUsers, schema_string, state, link);
