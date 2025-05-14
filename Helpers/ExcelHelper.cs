@@ -40,12 +40,12 @@ namespace HttpFlowFinder.Helpers
 
                         MessageBox.Show("Finished :)");
 
-                        DialogResult confirmResult = MessageBox.Show("Do you want to open the file?", "Excel file", MessageBoxButtons.YesNo);
+                        //DialogResult confirmResult = MessageBox.Show("Do you want to open the file?", "Excel file", MessageBoxButtons.YesNo);
 
-                        if (confirmResult == DialogResult.Yes)
-                        {
-                            System.Diagnostics.Process.Start(saveFileDialog.FileName);
-                        }
+                        //if (confirmResult == DialogResult.Yes)
+                        //{
+                        //    System.Diagnostics.Process.Start(saveFileDialog.FileName);
+                        //}
                     }
                 });
 
@@ -127,7 +127,7 @@ namespace HttpFlowFinder.Helpers
 
             }
 
-            //AutosizeColumns(sheet, 8);
+            AutosizeColumns(sheet, 8);
         }
 
         private void AutosizeColumns(Worksheet sheet, int columnsCount)
