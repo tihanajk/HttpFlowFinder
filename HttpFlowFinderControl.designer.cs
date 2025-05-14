@@ -31,8 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HttpFlowFinderControl));
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.loginBtn = new System.Windows.Forms.ToolStripButton();
-            this.getSolutionsBtn = new System.Windows.Forms.ToolStripButton();
-            this.fetchFlowsBtn = new System.Windows.Forms.ToolStripButton();
             this.exportBtn = new System.Windows.Forms.ToolStripButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.unmanagedCheck = new System.Windows.Forms.CheckBox();
@@ -54,6 +52,9 @@
             this.usersCheck = new System.Windows.Forms.CheckBox();
             this.tenantCheck = new System.Windows.Forms.CheckBox();
             this.anyoneCheck = new System.Windows.Forms.CheckBox();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.solutionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.flowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -67,8 +68,7 @@
             this.toolStripMenu.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStripMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loginBtn,
-            this.getSolutionsBtn,
-            this.fetchFlowsBtn,
+            this.toolStripButton1,
             this.exportBtn});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
@@ -86,24 +86,6 @@
             this.loginBtn.Text = "Login";
             this.loginBtn.Click += new System.EventHandler(this.LoginBtn_Click);
             // 
-            // getSolutionsBtn
-            // 
-            this.getSolutionsBtn.Image = ((System.Drawing.Image)(resources.GetObject("getSolutionsBtn.Image")));
-            this.getSolutionsBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.getSolutionsBtn.Name = "getSolutionsBtn";
-            this.getSolutionsBtn.Size = new System.Drawing.Size(162, 34);
-            this.getSolutionsBtn.Text = "Get solutions";
-            this.getSolutionsBtn.Click += new System.EventHandler(this.GetSolutionsBtn_Click);
-            // 
-            // fetchFlowsBtn
-            // 
-            this.fetchFlowsBtn.Image = ((System.Drawing.Image)(resources.GetObject("fetchFlowsBtn.Image")));
-            this.fetchFlowsBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.fetchFlowsBtn.Name = "fetchFlowsBtn";
-            this.fetchFlowsBtn.Size = new System.Drawing.Size(145, 34);
-            this.fetchFlowsBtn.Text = "Fetch flows";
-            this.fetchFlowsBtn.Click += new System.EventHandler(this.FetchFlowsBtn_Click);
-            // 
             // exportBtn
             // 
             this.exportBtn.Image = ((System.Drawing.Image)(resources.GetObject("exportBtn.Image")));
@@ -111,7 +93,7 @@
             this.exportBtn.Name = "exportBtn";
             this.exportBtn.Size = new System.Drawing.Size(100, 34);
             this.exportBtn.Text = "Export";
-            this.exportBtn.Click += new System.EventHandler(this.exportBtn_Click);
+            this.exportBtn.Click += new System.EventHandler(this.ExportBtn_Click);
             // 
             // groupBox1
             // 
@@ -125,7 +107,7 @@
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox1.Size = new System.Drawing.Size(65535, 184);
+            this.groupBox1.Size = new System.Drawing.Size(64611, 184);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Solution info";
@@ -189,7 +171,7 @@
             this.groupBox2.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox2.Size = new System.Drawing.Size(65535, 39026);
+            this.groupBox2.Size = new System.Drawing.Size(65524, 65277);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Flows";
@@ -254,7 +236,7 @@
             this.FlowsGrid.Margin = new System.Windows.Forms.Padding(6);
             this.FlowsGrid.Name = "FlowsGrid";
             this.FlowsGrid.RowHeadersWidth = 72;
-            this.FlowsGrid.Size = new System.Drawing.Size(65513, 38927);
+            this.FlowsGrid.Size = new System.Drawing.Size(65502, 65178);
             this.FlowsGrid.TabIndex = 0;
             // 
             // groupBox3
@@ -268,7 +250,7 @@
             this.groupBox3.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox3.Size = new System.Drawing.Size(65535, 184);
+            this.groupBox3.Size = new System.Drawing.Size(64291, 184);
             this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Flow filters";
@@ -323,7 +305,7 @@
             this.groupBox4.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox4.Size = new System.Drawing.Size(65535, 184);
+            this.groupBox4.Size = new System.Drawing.Size(64322, 184);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Auth type";
@@ -367,6 +349,31 @@
             this.anyoneCheck.UseVisualStyleBackColor = true;
             this.anyoneCheck.CheckedChanged += new System.EventHandler(this.AnyoneCheck_CheckedChanged);
             // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.solutionsToolStripMenuItem,
+            this.flowsToolStripMenuItem});
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(103, 34);
+            this.toolStripButton1.Text = "Load";
+            // 
+            // solutionsToolStripMenuItem
+            // 
+            this.solutionsToolStripMenuItem.Name = "solutionsToolStripMenuItem";
+            this.solutionsToolStripMenuItem.Size = new System.Drawing.Size(315, 40);
+            this.solutionsToolStripMenuItem.Text = "Solutions";
+            this.solutionsToolStripMenuItem.Click += new System.EventHandler(this.LoadSolutionsBtn_Click);
+            // 
+            // flowsToolStripMenuItem
+            // 
+            this.flowsToolStripMenuItem.Name = "flowsToolStripMenuItem";
+            this.flowsToolStripMenuItem.Size = new System.Drawing.Size(315, 40);
+            this.flowsToolStripMenuItem.Text = "Flows";
+            this.flowsToolStripMenuItem.Click += new System.EventHandler(this.LoadFlowsBtn_Click);
+            // 
             // HttpFlowFinderControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -379,7 +386,7 @@
             this.Controls.Add(this.toolStripMenu);
             this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "HttpFlowFinderControl";
-            this.Size = new System.Drawing.Size(83855, 39284);
+            this.Size = new System.Drawing.Size(65535, 65535);
             this.Load += new System.EventHandler(this.MyPluginControl_Load);
             this.toolStripMenu.ResumeLayout(false);
             this.toolStripMenu.PerformLayout();
@@ -402,7 +409,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView FlowsGrid;
-        private System.Windows.Forms.ToolStripButton fetchFlowsBtn;
         private System.Windows.Forms.ToolStripButton loginBtn;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox draftCheck;
@@ -415,7 +421,6 @@
         private System.Windows.Forms.ComboBox solutionPicker;
         private System.Windows.Forms.CheckBox unmanagedCheck;
         private System.Windows.Forms.CheckBox managedCheck;
-        private System.Windows.Forms.ToolStripButton getSolutionsBtn;
         private System.Windows.Forms.CheckBox suspendedCheck;
         private System.Windows.Forms.TextBox searchBox;
         private System.Windows.Forms.Label label2;
@@ -423,5 +428,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label loadingIndicator;
         private System.Windows.Forms.ToolStripButton exportBtn;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripButton1;
+        private System.Windows.Forms.ToolStripMenuItem solutionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem flowsToolStripMenuItem;
     }
 }

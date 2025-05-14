@@ -192,15 +192,11 @@ namespace HttpFlowFinder
         private string prevSolutionSelected = "";
         private void GetHttpFlows()
         {
-
             var selectedSolution = solutionPicker.SelectedItem as ListObject;
 
             if (selectedSolution == null) return;
 
             var solutionId = selectedSolution.Value;
-            if (prevSolutionSelected == solutionId) return;
-
-            prevSolutionSelected = solutionId;
 
             var solutionFilter = solutionId != "1" ?
                            $@"<link-entity name='solutioncomponent' from='objectid' to='workflowid' link-type='inner' alias='aa'>
@@ -329,120 +325,13 @@ namespace HttpFlowFinder
             });
         }
 
-        private void FetchFlowsBtn_Click(object sender, EventArgs e)
+        private void LoadFlowsBtn_Click(object sender, EventArgs e)
         {
             ExecuteMethod(GetHttpFlows);
         }
 
-        private DataTable InitializeFlowView()
-        {
-            DataTable dataTable = new DataTable();
-            dataTable.Columns.Add("ID", typeof(Guid));
-            dataTable.Columns.Add("Name", typeof(string));
-            dataTable.Columns.Add("Trigger", typeof(string));
-            dataTable.Columns.Add("Authentication Type", typeof(string));
-            dataTable.Columns.Add("Allowed Users", typeof(string));
-            dataTable.Columns.Add("Schema", typeof(string));
-            dataTable.Columns.Add("State", typeof(string));
-            dataTable.Columns.Add("Link", typeof(string));
 
-            FlowsGrid.DataSource = dataTable;
-            FlowsGrid.Columns["ID"].Visible = false;
-            FlowsGrid.Columns["Link"].Visible = false;
 
-            FlowsGrid.CellFormatting += DataGridView1_CellFormatting;
-            FlowsGrid.RowTemplate.Height = 30;
-
-            if (FlowsGrid.Columns["LinkButton"] == null)
-            {
-                DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
-                buttonColumn.HeaderText = "";
-                buttonColumn.Name = "LinkButton";
-                buttonColumn.Text = "Open in Power Automate";
-                buttonColumn.UseColumnTextForButtonValue = true;
-                buttonColumn.Width = 50;
-                FlowsGrid.Columns.Add(buttonColumn);
-            }
-
-            FlowsGrid.CellContentClick -= HandleFlowItemClick;
-            FlowsGrid.CellContentClick += HandleFlowItemClick;
-
-            return dataTable;
-        }
-
-        private void HandleFlowItemClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.ColumnIndex == FlowsGrid.Columns["LinkButton"]?.Index && e.RowIndex >= 0)
-            {
-                int rowIndex = e.RowIndex;
-                var link = (string)FlowsGrid.Rows[rowIndex].Cells["Link"].Value;
-
-                OpenLink(link);
-            }
-        }
-
-        private void OpenLink(string url)
-        {
-            try
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = url,
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred while trying to open the link: " + ex.Message);
-            }
-        }
-
-        private void DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            // Check if the column is the "name" column
-            if (FlowsGrid.Columns[e.ColumnIndex].HeaderText == "Authentication Type" && e.Value != null)
-            {
-                string cellValue = e.Value.ToString().ToLower();
-
-                // Change cell background color based on value
-                if (cellValue == "all")
-                {
-                    e.CellStyle.BackColor = Color.Red;
-                    e.CellStyle.ForeColor = Color.White;
-                }
-                else if (cellValue == "tenant")
-                {
-                    e.CellStyle.BackColor = Color.Yellow;
-                    e.CellStyle.ForeColor = Color.Black;
-                }
-                else if (cellValue == "user")
-                {
-                    e.CellStyle.BackColor = Color.Green;
-                    e.CellStyle.ForeColor = Color.White;
-                }
-            }
-            else if (FlowsGrid.Columns[e.ColumnIndex].HeaderText == "State" && e.Value != null)
-            {
-                string cellValue = e.Value.ToString().ToLower();
-
-                // Change cell background color based on value
-                if (cellValue == "draft")
-                {
-                    e.CellStyle.BackColor = Color.Yellow;
-                    e.CellStyle.ForeColor = Color.Black;
-                }
-                else if (cellValue == "activated")
-                {
-                    e.CellStyle.BackColor = Color.Green;
-                    e.CellStyle.ForeColor = Color.White;
-                }
-                else if (cellValue == "suspended")
-                {
-                    e.CellStyle.BackColor = Color.Gray;
-                    e.CellStyle.ForeColor = Color.White;
-                }
-            }
-        }
         private class ListObject
         {
             public string Name { get; set; }
@@ -513,7 +402,7 @@ namespace HttpFlowFinder
             });
         }
 
-        private void GetSolutionsBtn_Click(object sender, EventArgs e)
+        private void LoadSolutionsBtn_Click(object sender, EventArgs e)
         {
             ExecuteMethod(GetSolutions);
         }
@@ -528,9 +417,17 @@ namespace HttpFlowFinder
             ExecuteMethod(GetSolutions);
         }
 
-
         private void OnSolutionSelected(object sender, EventArgs e)
         {
+            var selectedSolution = solutionPicker.SelectedItem as ListObject;
+
+            if (selectedSolution == null) return;
+
+            var solutionId = selectedSolution.Value;
+            if (prevSolutionSelected == solutionId) return;
+
+            prevSolutionSelected = solutionId;
+
             ExecuteMethod(GetHttpFlows);
         }
 
@@ -599,7 +496,7 @@ namespace HttpFlowFinder
             var token = GetValidAccessTokenAsync(TENANT_ID);
         }
 
-        private void exportBtn_Click(object sender, EventArgs e)
+        private void ExportBtn_Click(object sender, EventArgs e)
         {
             if (_filtered.Count == 0)
             {
@@ -647,5 +544,115 @@ namespace HttpFlowFinder
         {
             FilterFlows();
         }
+
+        private DataTable InitializeFlowView()
+        {
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.Add("ID", typeof(Guid));
+            dataTable.Columns.Add("Name", typeof(string));
+            dataTable.Columns.Add("Trigger", typeof(string));
+            dataTable.Columns.Add("Authentication Type", typeof(string));
+            dataTable.Columns.Add("Allowed Users", typeof(string));
+            dataTable.Columns.Add("Schema", typeof(string));
+            dataTable.Columns.Add("State", typeof(string));
+            dataTable.Columns.Add("Link", typeof(string));
+
+            FlowsGrid.DataSource = dataTable;
+            FlowsGrid.Columns["ID"].Visible = false;
+            FlowsGrid.Columns["Link"].Visible = false;
+
+            FlowsGrid.CellFormatting += DataGridView1_CellFormatting;
+            FlowsGrid.RowTemplate.Height = 30;
+
+            if (FlowsGrid.Columns["LinkButton"] == null)
+            {
+                DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
+                buttonColumn.HeaderText = "";
+                buttonColumn.Name = "LinkButton";
+                buttonColumn.Text = "Open in Power Automate";
+                buttonColumn.UseColumnTextForButtonValue = true;
+                buttonColumn.Width = 50;
+                FlowsGrid.Columns.Add(buttonColumn);
+            }
+
+            FlowsGrid.CellContentClick -= HandleFlowItemClick;
+            FlowsGrid.CellContentClick += HandleFlowItemClick;
+
+            return dataTable;
+        }
+
+        private void OpenLink(string url)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while trying to open the link: " + ex.Message);
+            }
+        }
+
+        private void HandleFlowItemClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == FlowsGrid.Columns["LinkButton"]?.Index && e.RowIndex >= 0)
+            {
+                int rowIndex = e.RowIndex;
+                var link = (string)FlowsGrid.Rows[rowIndex].Cells["Link"].Value;
+
+                OpenLink(link);
+            }
+        }
+        private void DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Check if the column is the "name" column
+            if (FlowsGrid.Columns[e.ColumnIndex].HeaderText == "Authentication Type" && e.Value != null)
+            {
+                string cellValue = e.Value.ToString().ToLower();
+
+                // Change cell background color based on value
+                if (cellValue == "all")
+                {
+                    e.CellStyle.BackColor = Color.Red;
+                    e.CellStyle.ForeColor = Color.White;
+                }
+                else if (cellValue == "tenant")
+                {
+                    e.CellStyle.BackColor = Color.Yellow;
+                    e.CellStyle.ForeColor = Color.Black;
+                }
+                else if (cellValue == "user")
+                {
+                    e.CellStyle.BackColor = Color.Green;
+                    e.CellStyle.ForeColor = Color.White;
+                }
+            }
+            else if (FlowsGrid.Columns[e.ColumnIndex].HeaderText == "State" && e.Value != null)
+            {
+                string cellValue = e.Value.ToString().ToLower();
+
+                // Change cell background color based on value
+                if (cellValue == "draft")
+                {
+                    e.CellStyle.BackColor = Color.Yellow;
+                    e.CellStyle.ForeColor = Color.Black;
+                }
+                else if (cellValue == "activated")
+                {
+                    e.CellStyle.BackColor = Color.Green;
+                    e.CellStyle.ForeColor = Color.White;
+                }
+                else if (cellValue == "suspended")
+                {
+                    e.CellStyle.BackColor = Color.Gray;
+                    e.CellStyle.ForeColor = Color.White;
+                }
+            }
+        }
+
     }
 }
