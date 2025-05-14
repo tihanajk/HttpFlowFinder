@@ -1,6 +1,6 @@
 ﻿namespace HttpFlowFinder
 {
-    partial class MyPluginControl
+    partial class HttpFlowFinderControl
     {
         /// <summary> 
         /// Variable nécessaire au concepteur.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MyPluginControl));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HttpFlowFinderControl));
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.loginBtn = new System.Windows.Forms.ToolStripButton();
             this.getSolutionsBtn = new System.Windows.Forms.ToolStripButton();

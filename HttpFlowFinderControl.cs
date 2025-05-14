@@ -5,7 +5,6 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Newtonsoft.Json;
 using System;
-using System.Activities.Statements;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -14,14 +13,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Services.Description;
 using System.Windows.Forms;
 using XrmToolBox.Extensibility;
 
 
 namespace HttpFlowFinder
 {
-    public partial class MyPluginControl : PluginControlBase
+    public partial class HttpFlowFinderControl : PluginControlBase
     {
         private Settings mySettings;
 
@@ -35,7 +33,7 @@ namespace HttpFlowFinder
 
         private ConnectionDetail CONNECTION;
 
-        public MyPluginControl()
+        public HttpFlowFinderControl()
         {
             InitializeComponent();
             InitializeFlowView();

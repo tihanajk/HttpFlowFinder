@@ -236,12 +236,12 @@
     <Compile Include="Models\FlowCallbackResponse.cs" />
     <Compile Include="Models\FlowClientData.cs" />
     <Compile Include="Models\FlowInfo.cs" />
-    <Compile Include="MyPlugin.cs" />
-    <Compile Include="MyPluginControl.cs">
+    <Compile Include="HttpFlowFinder.cs" />
+    <Compile Include="HttpFlowFinderControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MyPluginControl.designer.cs">
-      <DependentUpon>MyPluginControl.cs</DependentUpon>
+    <Compile Include="HttpFlowFinderControl.designer.cs">
+      <DependentUpon>HttpFlowFinderControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
@@ -251,8 +251,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MyPluginControl.resx">
-      <DependentUpon>MyPluginControl.cs</DependentUpon>
+    <EmbeddedResource Include="HttpFlowFinderControl.resx">
+      <DependentUpon>HttpFlowFinderControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
