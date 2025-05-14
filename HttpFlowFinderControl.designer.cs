@@ -33,6 +33,7 @@
             this.loginBtn = new System.Windows.Forms.ToolStripButton();
             this.getSolutionsBtn = new System.Windows.Forms.ToolStripButton();
             this.fetchFlowsBtn = new System.Windows.Forms.ToolStripButton();
+            this.exportBtn = new System.Windows.Forms.ToolStripButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.unmanagedCheck = new System.Windows.Forms.CheckBox();
             this.managedCheck = new System.Windows.Forms.CheckBox();
@@ -53,7 +54,6 @@
             this.usersCheck = new System.Windows.Forms.CheckBox();
             this.tenantCheck = new System.Windows.Forms.CheckBox();
             this.anyoneCheck = new System.Windows.Forms.CheckBox();
-            this.exportBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -73,7 +73,7 @@
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
             this.toolStripMenu.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.toolStripMenu.Size = new System.Drawing.Size(15654, 40);
+            this.toolStripMenu.Size = new System.Drawing.Size(65535, 40);
             this.toolStripMenu.TabIndex = 4;
             this.toolStripMenu.Text = "toolStrip1";
             // 
@@ -104,6 +104,15 @@
             this.fetchFlowsBtn.Text = "Fetch flows";
             this.fetchFlowsBtn.Click += new System.EventHandler(this.FetchFlowsBtn_Click);
             // 
+            // exportBtn
+            // 
+            this.exportBtn.Image = ((System.Drawing.Image)(resources.GetObject("exportBtn.Image")));
+            this.exportBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.exportBtn.Name = "exportBtn";
+            this.exportBtn.Size = new System.Drawing.Size(100, 34);
+            this.exportBtn.Text = "Export";
+            this.exportBtn.Click += new System.EventHandler(this.exportBtn_Click);
+            // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -112,11 +121,11 @@
             this.groupBox1.Controls.Add(this.managedCheck);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.solutionPicker);
-            this.groupBox1.Location = new System.Drawing.Point(6, 52);
+            this.groupBox1.Location = new System.Drawing.Point(6, 58);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox1.Size = new System.Drawing.Size(14730, 190);
+            this.groupBox1.Size = new System.Drawing.Size(65535, 184);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Solution info";
@@ -180,7 +189,7 @@
             this.groupBox2.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox2.Size = new System.Drawing.Size(15643, 7246);
+            this.groupBox2.Size = new System.Drawing.Size(65535, 39026);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Flows";
@@ -245,7 +254,7 @@
             this.FlowsGrid.Margin = new System.Windows.Forms.Padding(6);
             this.FlowsGrid.Name = "FlowsGrid";
             this.FlowsGrid.RowHeadersWidth = 72;
-            this.FlowsGrid.Size = new System.Drawing.Size(15621, 7147);
+            this.FlowsGrid.Size = new System.Drawing.Size(65513, 38927);
             this.FlowsGrid.TabIndex = 0;
             // 
             // groupBox3
@@ -255,11 +264,11 @@
             this.groupBox3.Controls.Add(this.suspendedCheck);
             this.groupBox3.Controls.Add(this.draftCheck);
             this.groupBox3.Controls.Add(this.activeCheck);
-            this.groupBox3.Location = new System.Drawing.Point(767, 52);
+            this.groupBox3.Location = new System.Drawing.Point(767, 58);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox3.Size = new System.Drawing.Size(14410, 190);
+            this.groupBox3.Size = new System.Drawing.Size(65535, 184);
             this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Flow filters";
@@ -310,11 +319,11 @@
             this.groupBox4.Controls.Add(this.usersCheck);
             this.groupBox4.Controls.Add(this.tenantCheck);
             this.groupBox4.Controls.Add(this.anyoneCheck);
-            this.groupBox4.Location = new System.Drawing.Point(1208, 52);
+            this.groupBox4.Location = new System.Drawing.Point(1208, 58);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox4.Size = new System.Drawing.Size(14441, 190);
+            this.groupBox4.Size = new System.Drawing.Size(65535, 184);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Auth type";
@@ -358,16 +367,7 @@
             this.anyoneCheck.UseVisualStyleBackColor = true;
             this.anyoneCheck.CheckedChanged += new System.EventHandler(this.AnyoneCheck_CheckedChanged);
             // 
-            // exportBtn
-            // 
-            this.exportBtn.Image = ((System.Drawing.Image)(resources.GetObject("exportBtn.Image")));
-            this.exportBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.exportBtn.Name = "exportBtn";
-            this.exportBtn.Size = new System.Drawing.Size(100, 34);
-            this.exportBtn.Text = "Export";
-            this.exportBtn.Click += new System.EventHandler(this.exportBtn_Click);
-            // 
-            // MyPluginControl
+            // HttpFlowFinderControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -378,8 +378,8 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.toolStripMenu);
             this.Margin = new System.Windows.Forms.Padding(6);
-            this.Name = "MyPluginControl";
-            this.Size = new System.Drawing.Size(15654, 7504);
+            this.Name = "HttpFlowFinderControl";
+            this.Size = new System.Drawing.Size(83855, 39284);
             this.Load += new System.EventHandler(this.MyPluginControl_Load);
             this.toolStripMenu.ResumeLayout(false);
             this.toolStripMenu.PerformLayout();
