@@ -1,4 +1,5 @@
-﻿using McTools.Xrm.Connection;
+﻿using HttpFlowFinder.Helpers;
+using McTools.Xrm.Connection;
 using Microsoft.Identity.Client;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
@@ -13,8 +14,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web.Services.Description;
 using System.Windows.Forms;
 using XrmToolBox.Extensibility;
+
 
 namespace HttpFlowFinder
 {
@@ -187,18 +190,6 @@ namespace HttpFlowFinder
             return JsonConvert.DeserializeObject<FlowCallbackResponse>(json);
         }
 
-        private class FlowInfo
-        {
-            public string name { get; set; }
-            public Guid id { get; set; }
-            public string trigger { get; set; }
-            public string authType { get; set; }
-            public string users { get; set; }
-            public string schema { get; set; }
-            public int state { get; set; }
-            public string link { get; set; }
-        }
-
         private List<FlowInfo> _flows = new List<FlowInfo>();
         private string prevSolutionSelected = "";
         private void GetHttpFlows()
@@ -280,6 +271,7 @@ namespace HttpFlowFinder
                         var flowId = flow.Id;
                         var flowName = (string)flow["name"];
                         var flowState = ((OptionSetValue)flow["statecode"]).Value;
+                        var flowState_display = flow.FormattedValues["statecode"];
 
                         var clientData = JsonConvert.DeserializeObject<FlowClientData>((string)flow["clientdata"]);
 
@@ -316,6 +308,7 @@ namespace HttpFlowFinder
                             name = flowName,
                             id = flowId,
                             state = flowState,
+                            state_display = flowState_display,
                             trigger = httpTrigger,
                             authType = triggerAuthType,
                             users = triggerAllowedUsers,
@@ -323,6 +316,7 @@ namespace HttpFlowFinder
                             link = link
                         };
                         if (!_flows.Any(f => f.id == flowId)) _flows.Add(flowInfo);
+                        if (!_filtered.Any(f => f.id == flowId)) _filtered.Add(flowInfo);
 
                         var state = flowState == 0 ? "Draft" : flowState == 1 ? "Activated" : "Suspended";
                         dataTable.Rows.Add(flowId, flowName, httpTrigger, triggerAuthType, triggerAllowedUsers, schema_string, state, link);
@@ -366,7 +360,7 @@ namespace HttpFlowFinder
                 DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
                 buttonColumn.HeaderText = "";
                 buttonColumn.Name = "LinkButton";
-                buttonColumn.Text = "Open flow";
+                buttonColumn.Text = "Open in Power Automate";
                 buttonColumn.UseColumnTextForButtonValue = true;
                 buttonColumn.Width = 50;
                 FlowsGrid.Columns.Add(buttonColumn);
@@ -542,6 +536,7 @@ namespace HttpFlowFinder
             ExecuteMethod(GetHttpFlows);
         }
 
+        private List<FlowInfo> _filtered = new List<FlowInfo>();
 
         private void FilterFlows()
         {
@@ -551,27 +546,28 @@ namespace HttpFlowFinder
 
             if (!active && !draft && !susp) return;
 
-            var filtered = _flows.Where(f =>
+            _filtered = _flows.Where(f =>
                                 (active && f.state == 1) ||
                                 (draft && f.state == 0) ||
                                 (susp && f.state == 2)
-                            );
+                            ).ToList();
 
-            filtered = filtered.Where(f =>
+            _filtered = _filtered.Where(f =>
                 (anyoneCheck.Checked && f.authType == "All") ||
                 (tenantCheck.Checked && f.authType == "Tenant") ||
                 (usersCheck.Checked && f.authType == "User")
-            );
+            ).ToList();
 
             var term = searchBox.Text;
             if (!string.IsNullOrEmpty(term))
             {
-                filtered = filtered.Where(f => f.name.ToLower().Contains(term.ToLower()) || f.trigger.ToLower().Contains(term.ToLower()));
+                _filtered = _filtered.Where(f =>
+                f.name.ToLower().Contains(term.ToLower()) || f.trigger.ToLower().Contains(term.ToLower())).ToList();
             }
 
             var dataTable = InitializeFlowView();
 
-            foreach (var flow in filtered)
+            foreach (var flow in _filtered)
             {
                 var state = flow.state == 0 ? "Draft" : flow.state == 1 ? "Activated" : "Suspended";
                 dataTable.Rows.Add(flow.id, flow.name, flow.trigger, flow.authType, flow.users, flow.schema, state, flow.link);
@@ -580,6 +576,45 @@ namespace HttpFlowFinder
             FlowsGrid.DataSource = dataTable;
             flowsCounter.Text = dataTable.Rows.Count.ToString();
         }
+
+
+        private void LoginBtn_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(CONNECTION.S2SClientSecret))
+            {
+                MessageBox.Show(
+                    "You are using the deprecated connection method. Please use OAuth/MFA or Client ID/Secret method.",
+                    "Deprecated Connection",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            if (!IsTokenExpired(TOKEN_FOR_CALLBACK))
+            {
+                MessageBox.Show("Token is still valid", "Good Connection", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                return;
+            }
+
+            var token = GetValidAccessTokenAsync(TENANT_ID);
+        }
+
+        private void exportBtn_Click(object sender, EventArgs e)
+        {
+            if (_filtered.Count == 0)
+            {
+                MessageBox.Show("No data in the table", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var excelHelper = new ExcelHelper();
+
+            var fileName = "Http flows";
+            excelHelper.HandleExcel(fileName, _filtered);
+        }
+
         private void SuspendedCheck_CheckedChanged(object sender, EventArgs e)
         {
             FilterFlows();
@@ -613,33 +648,6 @@ namespace HttpFlowFinder
         private void SearchBox_TextChanged(object sender, EventArgs e)
         {
             FilterFlows();
-        }
-
-        private void LoginBtn_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(CONNECTION.S2SClientSecret))
-            {
-                MessageBox.Show(
-                    "You are using the deprecated connection method. Please use OAuth/MFA or Client ID/Secret method.",
-                    "Deprecated Connection",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-
-                return;
-            }
-
-            if (!IsTokenExpired(TOKEN_FOR_CALLBACK))
-            {
-                MessageBox.Show(
-                    "Token is still valid",
-                    "Good Connection",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-
-                return;
-            }
-
-            GetValidAccessTokenAsync(TENANT_ID);
         }
     }
 }
