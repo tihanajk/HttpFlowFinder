@@ -38,7 +38,7 @@ namespace HttpFlowFinder
 
         private void MyPluginControl_Load(object sender, EventArgs e)
         {
-            if (ConnectionDetail.TenantId == Guid.Empty)
+            if (ConnectionDetail?.TenantId == Guid.Empty)
             {
                 ShowInfoNotification("You are using the deprecated connection method. Please use OAuth/MFA or Client ID/Secret method if you want to see the triggers", new Uri("https://learn.microsoft.com/en-us/power-platform/admin/manage-application-users#create-an-application-user"));
             }
@@ -473,7 +473,7 @@ namespace HttpFlowFinder
 
         private void LoginBtn_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(CONNECTION.S2SClientSecret))
+            if (string.IsNullOrEmpty(CONNECTION?.S2SClientSecret))
             {
                 MessageBox.Show(
                     "You are using the deprecated connection method. Please use OAuth/MFA or Client ID/Secret method.",
