@@ -221,6 +221,11 @@
     <Compile Include="Models\FlowClientData.cs" />
     <Compile Include="Models\FlowInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +239,15 @@
     <Content Include="Images\logo_32.png" />
     <Content Include="Images\logo_64.png" />
     <Content Include="Images\user_btn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HttpFlowFinderControl.resx">
+      <DependentUpon>HttpFlowFinderControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

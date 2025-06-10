@@ -31,6 +31,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HttpFlowFinderControl));
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.loginBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.solutionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.flowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportBtn = new System.Windows.Forms.ToolStripButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.unmanagedCheck = new System.Windows.Forms.CheckBox();
@@ -52,9 +55,6 @@
             this.usersCheck = new System.Windows.Forms.CheckBox();
             this.tenantCheck = new System.Windows.Forms.CheckBox();
             this.anyoneCheck = new System.Windows.Forms.CheckBox();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.solutionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.flowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenu.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -79,16 +79,41 @@
             // 
             // loginBtn
             // 
-            //this.loginBtn.Image = ((System.Drawing.Image)(resources.GetObject("loginBtn.Image")));
+            this.loginBtn.Image = ((System.Drawing.Image)(resources.GetObject("loginBtn.Image")));
             this.loginBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.loginBtn.Name = "loginBtn";
             this.loginBtn.Size = new System.Drawing.Size(92, 34);
             this.loginBtn.Text = "Login";
             this.loginBtn.Click += new System.EventHandler(this.LoginBtn_Click);
             // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.solutionsToolStripMenuItem,
+            this.flowsToolStripMenuItem});
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(103, 34);
+            this.toolStripButton1.Text = "Load";
+            // 
+            // solutionsToolStripMenuItem
+            // 
+            this.solutionsToolStripMenuItem.Name = "solutionsToolStripMenuItem";
+            this.solutionsToolStripMenuItem.Size = new System.Drawing.Size(315, 40);
+            this.solutionsToolStripMenuItem.Text = "Solutions";
+            this.solutionsToolStripMenuItem.Click += new System.EventHandler(this.LoadSolutionsBtn_Click);
+            // 
+            // flowsToolStripMenuItem
+            // 
+            this.flowsToolStripMenuItem.Name = "flowsToolStripMenuItem";
+            this.flowsToolStripMenuItem.Size = new System.Drawing.Size(315, 40);
+            this.flowsToolStripMenuItem.Text = "Flows";
+            this.flowsToolStripMenuItem.Click += new System.EventHandler(this.LoadFlowsBtn_Click);
+            // 
             // exportBtn
             // 
-            //this.exportBtn.Image = ((System.Drawing.Image)(resources.GetObject("exportBtn.Image")));
+            this.exportBtn.Image = ((System.Drawing.Image)(resources.GetObject("exportBtn.Image")));
             this.exportBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.exportBtn.Name = "exportBtn";
             this.exportBtn.Size = new System.Drawing.Size(100, 34);
@@ -97,7 +122,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.unmanagedCheck);
             this.groupBox1.Controls.Add(this.managedCheck);
@@ -158,8 +183,8 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.loadingIndicator);
             this.groupBox2.Controls.Add(this.flowsCounter);
@@ -225,8 +250,8 @@
             // 
             this.FlowsGrid.AllowUserToAddRows = false;
             this.FlowsGrid.AllowUserToDeleteRows = false;
-            this.FlowsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.FlowsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.FlowsGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.FlowsGrid.BackgroundColor = System.Drawing.SystemColors.InactiveCaption;
@@ -241,7 +266,7 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.suspendedCheck);
             this.groupBox3.Controls.Add(this.draftCheck);
@@ -296,7 +321,7 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.usersCheck);
             this.groupBox4.Controls.Add(this.tenantCheck);
@@ -348,31 +373,6 @@
             this.anyoneCheck.Text = "Anyone";
             this.anyoneCheck.UseVisualStyleBackColor = true;
             this.anyoneCheck.CheckedChanged += new System.EventHandler(this.AnyoneCheck_CheckedChanged);
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.solutionsToolStripMenuItem,
-            this.flowsToolStripMenuItem});
-            //this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(103, 34);
-            this.toolStripButton1.Text = "Load";
-            // 
-            // solutionsToolStripMenuItem
-            // 
-            this.solutionsToolStripMenuItem.Name = "solutionsToolStripMenuItem";
-            this.solutionsToolStripMenuItem.Size = new System.Drawing.Size(315, 40);
-            this.solutionsToolStripMenuItem.Text = "Solutions";
-            this.solutionsToolStripMenuItem.Click += new System.EventHandler(this.LoadSolutionsBtn_Click);
-            // 
-            // flowsToolStripMenuItem
-            // 
-            this.flowsToolStripMenuItem.Name = "flowsToolStripMenuItem";
-            this.flowsToolStripMenuItem.Size = new System.Drawing.Size(315, 40);
-            this.flowsToolStripMenuItem.Text = "Flows";
-            this.flowsToolStripMenuItem.Click += new System.EventHandler(this.LoadFlowsBtn_Click);
             // 
             // HttpFlowFinderControl
             // 
